@@ -47,7 +47,6 @@ typedef struct {
     uint32_t _period;
     uint32_t _configured_pins;
     uint32_t _output;
-    uint8_t _setting_duty;
     pwm_schedule_t _schedule[PWM_MAX_CHANNELS+1];
     pwm_schedule_t *_schedule_current;
     uint32_t _tick;
@@ -78,14 +77,12 @@ void pwm_init(uint8_t channels, const uint8_t* pins, uint8_t reverse) {
 
     pwm_info.channels = channels;
     pwm_info._output = 0;
-    pwm_info._setting_duty = 0;
     bzero(pwm_info._schedule, PWM_MAX_CHANNELS * sizeof(pwm_schedule_t));
     bzero(pwm_info.pins, PWM_MAX_CHANNELS * sizeof(pwm_pin_t));
     pwm_info._tick = 0;
     pwm_info._period = PWM_MAX_PERIOD;
 
-    for (uint8_t ii=0; ii<channels; ii++)
-    {
+    for (uint8_t ii=0; ii<channels; ii++) {
         pwm_info.pins[ii].pin = pins[ii];
         pwm_info.pins[ii].duty = 0;
 
@@ -108,8 +105,7 @@ void pwm_init(uint8_t channels, const uint8_t* pins, uint8_t reverse) {
 }
 
 void pwm_set_freq(uint16_t freq) {
-    if (!timer_set_frequency(FRC1, freq))
-    {
+    if (!timer_set_frequency(FRC1, freq)) {
         pwm_info.freq = freq;
         debug("Frequency set at %u", pwm_info.freq);
     }
@@ -136,8 +132,8 @@ void dump_schedule() {
     } while (pwm_schedule->ticks > 0);
 }
 
-void pwm_set_duty(uint8_t channel, uint32_t duty) {
-    pwm_info._setting_duty = 1;
+void pwm_set_duty_channel(uint8_t channel, uint32_t duty) {
+    if (channel >= pwm_info.channels) return;
 
     pwm_info.pins[channel].duty = duty;
     uint8_t pin_n = pwm_info.pins[channel].pin;
@@ -201,8 +197,9 @@ void pwm_set_duty(uint8_t channel, uint32_t duty) {
     //_xt_isr_mask(1<<INUM_TIMER_FRC1);
     bool running = timer_get_run(FRC1);
     if (running) {
-        timer_set_interrupts(FRC1, false);
-        //timer_set_run(FRC1, false);
+        pwm_stop();
+        //timer_set_interrupts(FRC1, false);
+        ////timer_set_run(FRC1, false);
     }
 
     sched_prev = &pwm_info._schedule[0];
@@ -225,16 +222,24 @@ void pwm_set_duty(uint8_t channel, uint32_t duty) {
     } while (sched->ticks > 0);
 
     if (running) {
+        pwm_start();
         //taskEXIT_CRITICAL();
         //ETS_FRC1_INTR_ENABLE();
         //_xt_isr_unmask(1<<INUM_TIMER_FRC1);
-        pwm_info._setting_duty = 0;
         //pwm_info._schedule_current = &pwm_info._schedule[0];
-        timer_set_load(FRC1, 1);
-        timer_set_interrupts(FRC1, true);
+        //timer_set_load(FRC1, 1);
+        //timer_set_interrupts(FRC1, true);
         //timer_set_run(FRC1, true);
     }
 
+}
+
+void pwm_set_duty(uint32_t duty) {
+    pwm_stop();
+    for (uint8_t ii=0; ii<pwm_info.channels; ii++) {
+        pwm_set_duty_channel(ii, duty);
+    }
+    pwm_start();
 }
 
 void pwm_restart() {
