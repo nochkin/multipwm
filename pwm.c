@@ -1,5 +1,7 @@
 /*
  * Multi-channel PWM support for esp-open-rtos
+ *
+ * (c) 2017-2018 Sashka Nochkin https://github.com/nochkin/pwm
  */
 
 #include <string.h>
@@ -192,28 +194,18 @@ void pwm_set_duty_channel(uint8_t channel, uint32_t duty) {
 
     // cleanup
 
-    //taskENTER_CRITICAL();
-    //ETS_FRC1_INTR_DISABLE();
-    //_xt_isr_mask(1<<INUM_TIMER_FRC1);
     bool running = timer_get_run(FRC1);
     if (running) {
         pwm_stop();
-        //timer_set_interrupts(FRC1, false);
-        ////timer_set_run(FRC1, false);
     }
 
     sched_prev = &pwm_info._schedule[0];
     sched = sched_prev->next;
     do {
         if ((sched->pins_s == 0) && (sched->pins_c == 0)) {
-            //if (pwm_info._schedule_current == sched) {
-            //    pwm_info._schedule_current = sched_prev;
-            //    pwm_info._tick = sched_prev->ticks;
-            //}
             pwm_info._schedule_current = &pwm_info._schedule[0];
             pwm_info._tick = 0;
             sched_prev->next = sched->next;
-            //sched->next = NULL;
             sched->ticks = 0;
             break;
         }
@@ -223,13 +215,6 @@ void pwm_set_duty_channel(uint8_t channel, uint32_t duty) {
 
     if (running) {
         pwm_start();
-        //taskEXIT_CRITICAL();
-        //ETS_FRC1_INTR_ENABLE();
-        //_xt_isr_unmask(1<<INUM_TIMER_FRC1);
-        //pwm_info._schedule_current = &pwm_info._schedule[0];
-        //timer_set_load(FRC1, 1);
-        //timer_set_interrupts(FRC1, true);
-        //timer_set_run(FRC1, true);
     }
 
 }
@@ -248,7 +233,6 @@ void pwm_restart() {
 }
 
 void pwm_start() {
-    // Trigger ON
     timer_set_load(FRC1, 1);
     timer_set_reload(FRC1, false);
     timer_set_interrupts(FRC1, true);
@@ -260,7 +244,7 @@ void pwm_start() {
 void pwm_stop() {
     timer_set_interrupts(FRC1, false);
     timer_set_run(FRC1, false);
-    //GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, pwm_info._configured_pins);
+    GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, pwm_info._configured_pins);
 
     debug("PWM stopped");
 }
