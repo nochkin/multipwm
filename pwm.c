@@ -114,6 +114,7 @@ void pwm_set_freq(uint16_t freq) {
 }
 
 void dump_schedule() {
+#ifdef PWM_DEBUG
     debug("Schedule:\n");
     uint8_t ii = 0;
     pwm_schedule_t *pwm_schedule = &pwm_info._schedule[0];
@@ -132,6 +133,7 @@ void dump_schedule() {
                 );
         pwm_schedule = pwm_schedule->next;
     } while (pwm_schedule->ticks > 0);
+#endif
 }
 
 void pwm_set_duty_channel(uint8_t channel, uint32_t duty) {
