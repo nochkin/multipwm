@@ -1,9 +1,7 @@
-/* Very basic example to test the pwm library
- * Hook up an LED to pins 12, 13, 15, and you should see the intensity change
+/* Example on how to use the multi-channel pwm library
+ * LED connected to pins 12, 13, 15
  *
- * Part of esp-open-rtos
- * Copyright (C) 2015 Javier Cardona (https://github.com/jcard0na)
- * BSD Licensed as described in the file LICENSE
+ * (c) 2015 Sashka Nochkin (https://github.com/nochkin)
  */
 #include "espressif/esp_common.h"
 #include "esp/uart.h"
@@ -38,5 +36,5 @@ void user_init(void)
     uart_set_baud(0, 115200);
     printf("SDK version:%s\n", sdk_system_get_sdk_version());
 
-    xTaskCreate(pwm_task, "tsk1", 256, NULL, 2, NULL);
+    xTaskCreate(pwm_task, "pwm_task", 256, NULL, 2, NULL);
 }
