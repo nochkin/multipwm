@@ -1,4 +1,5 @@
-/* Example on how to use the multi-channel pwm library
+/* 
+ * Example for the multi-channel pwm library
  * LED connected to pins 12, 13, 15
  *
  * (c) 2015 Sashka Nochkin (https://github.com/nochkin)
