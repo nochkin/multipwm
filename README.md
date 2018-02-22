@@ -1,2 +1,2 @@
-# pwm
-pwm library for esp-open-rtos
+# MultiPWM
+MultiPWM library for esp-open-rtos
