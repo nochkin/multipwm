@@ -6,9 +6,9 @@
 
 #include <string.h>
 
-#include <espressif/esp_common.h>
-#include <FreeRTOS.h>
-#include <task.h>
+#include "espressif/esp_common.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 #include "multipwm.h"
 
@@ -86,7 +86,7 @@ void multipwm_set_freq(pwm_info_t *pwm_info, uint16_t freq) {
     }
 }
 
-void dump_schedule(pwm_info_t *pwm_info) {
+void multipwm_dump_schedule(pwm_info_t *pwm_info) {
 #ifdef PWM_DEBUG
     debug("Schedule:\n");
     uint8_t ii = 0;
