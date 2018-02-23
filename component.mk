@@ -1,10 +1,10 @@
-# Component makefile for extras/pwm
+# Component makefile for extras/multipwm
 
-INC_DIRS += $(ROOT)extras/pwm
+INC_DIRS += $(ROOT)extras/multipwm
 
 # args for passing into compile rule generation
-extras/pwm_INC_DIR =  $(ROOT)extras/pwm
-extras/pwm_SRC_DIR =  $(ROOT)extras/pwm
+extras/multipwm_INC_DIR =  $(ROOT)extras/multipwm
+extras/multipwm_SRC_DIR =  $(ROOT)extras/multipwm
 
-$(eval $(call component_compile_rules,extras/pwm))
+$(eval $(call component_compile_rules,extras/multipwm))
 

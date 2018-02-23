@@ -1,8 +1,10 @@
-# MultiPWM
-MultiPWM library for esp-open-rtos
-
-# Example
-```C
+/* An example for the multipwm library
+ * Connect LEDs to pins 12, 13, 15 to see the light changes
+ *
+ * Part of esp-open-rtos
+ * Copyright (c) Sashka Nochkin (https://github.com/nochkin)
+ * MIT Licensed
+ */
 #include "espressif/esp_common.h"
 #include "esp/uart.h"
 #include "FreeRTOS.h"
@@ -44,5 +46,3 @@ void user_init(void)
 
     xTaskCreate(multipwm_task, "multipwm", 256, NULL, 2, NULL);
 }
-```
-
