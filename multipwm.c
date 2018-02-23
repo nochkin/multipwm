@@ -72,6 +72,8 @@ void multipwm_init(pwm_info_t *pwm_info) {
 }
 
 void multipwm_set_pin(pwm_info_t *pwm_info, uint8_t channel, uint8_t pin) {
+    if (channel >= pwm_info->channels) return;
+
     pwm_info->pins[channel].pin = pin;
     pwm_info->pins[channel].duty = 0;
 
