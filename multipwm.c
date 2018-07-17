@@ -27,7 +27,7 @@
       (byte & 0x08 ? '1' : '0'), \
       (byte & 0x04 ? '1' : '0'), \
       (byte & 0x02 ? '1' : '0'), \
-      (byte & 0x01 ? '1' : '0') 
+      (byte & 0x01 ? '1' : '0')
 
 static void IRAM multipwm_interrupt_handler(void *arg) {
     pwm_info_t *pwm_info = arg;
@@ -35,8 +35,13 @@ static void IRAM multipwm_interrupt_handler(void *arg) {
     pwm_schedule_t *curr_next = curr->next;
     uint32_t tick_next = curr_next->ticks;
 
-    GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, curr->pins_s);
-    GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, curr->pins_c);
+    if (pwm_info->reverse) {
+        GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, curr->pins_c);
+        GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, curr->pins_s);
+    } else {
+        GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, curr->pins_s);
+        GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, curr->pins_c);
+    }
 
     if (tick_next == 0) {
         tick_next = pwm_info->_period;
@@ -216,7 +221,6 @@ void multipwm_start(pwm_info_t *pwm_info) {
 void multipwm_stop(pwm_info_t *pwm_info) {
     timer_set_interrupts(FRC1, false);
     timer_set_run(FRC1, false);
-    GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, pwm_info->_configured_pins);
 
     debug("PWM stopped");
 }
