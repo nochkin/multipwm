@@ -17,7 +17,7 @@ extern "C" {
 
 typedef struct {
     uint8_t pin;
-    uint32_t duty;
+    uint16_t duty;
 } pwm_pin_t;
 
 typedef struct pwm_schedule {
@@ -67,14 +67,14 @@ void multipwm_set_freq(pwm_info_t *pwm_info, uint16_t freq);
  * @param channel Channel index
  * @param duty Duty value
  */
-void multipwm_set_duty(pwm_info_t *pwm_info, uint8_t channel, uint32_t duty);
+void multipwm_set_duty(pwm_info_t *pwm_info, uint8_t channel, uint16_t duty);
 
 /**
  * Set Duty for all channels between 0 and UINT16_MAX
  * @param pwm_info Pointer to pwm_info
  * @param duty Duty value
  */
-void multipwm_set_duty_all(pwm_info_t *pwm_info, uint32_t duty);
+void multipwm_set_duty_all(pwm_info_t *pwm_info, uint16_t duty);
 
 /**
  * Start multipwm

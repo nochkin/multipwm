@@ -111,7 +111,7 @@ void multipwm_dump_schedule(pwm_info_t *pwm_info) {
 #endif
 }
 
-void multipwm_set_duty(pwm_info_t *pwm_info, uint8_t channel, uint32_t duty) {
+void multipwm_set_duty(pwm_info_t *pwm_info, uint8_t channel, uint16_t duty) {
     if (channel >= pwm_info->channels) return;
 
     pwm_info->pins[channel].duty = duty;
@@ -196,7 +196,7 @@ void multipwm_set_duty(pwm_info_t *pwm_info, uint8_t channel, uint32_t duty) {
 
 }
 
-void multipwm_set_duty_all(pwm_info_t *pwm_info, uint32_t duty) {
+void multipwm_set_duty_all(pwm_info_t *pwm_info, uint16_t duty) {
     multipwm_stop(pwm_info);
     for (uint8_t ii=0; ii<pwm_info->channels; ii++) {
         multipwm_set_duty(pwm_info, ii, duty);
