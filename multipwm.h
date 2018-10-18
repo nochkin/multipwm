@@ -31,6 +31,7 @@ typedef struct {
     uint16_t freq;
     uint8_t channels;
     pwm_pin_t pins[MULTIPWM_MAX_CHANNELS];
+    bool reverse;
 
     uint32_t _period;
     uint32_t _configured_pins;
